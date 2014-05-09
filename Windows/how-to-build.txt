@@ -1,0 +1,3 @@
+install slimDX runtime
+add reference from solidworks dll :
+SolidWorks.Interop.sldworks.dll

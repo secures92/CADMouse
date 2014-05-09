@@ -25,15 +25,15 @@ namespace _3DMouseTranslator
         private SimpleJoystick sJoy;
         private JoystickState jState;
 
-        private double factor = 0.01;
-        private int calY = 0, calX = 0;
+        private double factor = 0.0012;
+        private int calY = 0, calX = 0, calZ = 0;
         private int threshold = 5;
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            swType = Type.GetTypeFromProgID("SldWorks.Application.21");
+            swType = Type.GetTypeFromProgID("SldWorks.Application");    //SldWorks.Application.21 pour le 2013
             app = (SldWorks)Activator.CreateInstance(swType);
             if (app != null)
             {
@@ -41,8 +41,6 @@ namespace _3DMouseTranslator
                 swModel = ((ModelDoc2)(app.ActiveDoc));
                 modelView = (ModelView)swModel.ActiveView;
             }
-
-
             sJoy = new SimpleJoystick();
         }
 
@@ -50,20 +48,25 @@ namespace _3DMouseTranslator
         {
             calX = jState.X;
             calY = jState.Y;
+            calZ = jState.Z;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             jState = sJoy.State;
-            if ((Math.Abs(jState.X-calX) > threshold) || (Math.Abs(jState.Y-calY) > threshold))
+            if ((Math.Abs(jState.X-calX) > threshold) || (Math.Abs(jState.Y-calY) > threshold) || (Math.Abs(jState.Z-calZ) > threshold))
             {
 
                 double angX = ((int)(jState.X - calX - (Math.Sign(jState.X)*5))) * (Math.PI / 6) * factor;
+                double angZ = ((int)(jState.Z - calZ - (Math.Sign(jState.Z) * 5))) * (Math.PI / 6) * factor;
                 double angY = ((int)(jState.Y - calY - (Math.Sign(jState.X)*5))) * (Math.PI / 6) * factor;
-                label1.Text = "X=" + Math.Round(180 * angX / Math.PI, 3).ToString() + "° Y=" + Math.Round(180 * angY / Math.PI, 3).ToString() + "°";
-                if ((angX != 0) || (angY != 0))
+                label1.Text = "X=" + Math.Round(180 * angX / Math.PI, 3).ToString() + "°";
+                label1.Text += " Y=" + Math.Round(180 * angY / Math.PI, 3).ToString() + "°";
+                label1.Text += " Z=" + Math.Round(1 - angZ/4 ,3).ToString();
+                if ((angX != 0) || (angY != 0) || (angZ != 0))
                 {
                     modelView.RotateAboutCenter(angX, angY);
+                    modelView.ZoomByFactor(1 - angZ/4);
                 }
             }
         }

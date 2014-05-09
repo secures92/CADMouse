@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3DMouseTranslator", "3DMouseTranslator\3DMouseTranslator.csproj", "{F0D373A8-7D3D-414A-A3FF-886CAD15EF23}"
 EndProject
 Global
