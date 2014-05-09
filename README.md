@@ -7,8 +7,9 @@ fully 3D printable CAD-Mouse
 CAD-Mouse is connected as Joystick. Windows host software translates Axis movements to Solidworks view translation commands. 
 
 ###Changelog
-- XX.XX.XXXX - Inital Commit
 - 09.05.2014 - Improvements by crazytiti
+- 01.03.2014 - Inital Commit
+
 
 
 ###Links
