@@ -31,20 +31,32 @@ namespace _3DMouseTranslator
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            try
+            {
+                sJoy = new SimpleJoystick();
+            }
+            catch (Exception error_init)
+            {
+                MessageBox.Show(null, error_init.ToString(), "Init error");
+                Application.Exit();
+            }
             swType = Type.GetTypeFromProgID("SldWorks.Application");    //SldWorks.Application.21 pour le 2013
             app = (SldWorks)Activator.CreateInstance(swType);
             if (app != null)
             {
                 app.Visible = true;
-                swModel = ((ModelDoc2)(app.ActiveDoc));
-                modelView = (ModelView)swModel.ActiveView;
+                timer2.Enabled = true;
             }
-            sJoy = new SimpleJoystick();
+            else
+            {
+                MessageBox.Show(null, "No SolidWork detected", "Init error");
+                Application.Exit();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            jState = sJoy.State;
             calX = jState.X;
             calY = jState.Y;
             calZ = jState.Z;
@@ -88,7 +100,7 @@ namespace _3DMouseTranslator
                     else
                     {
                         modelView.RotateAboutCenter(angY, angX);
-                        modelView.RollBy(angZ);
+                        modelView.RollBy(-angZ);
                     }
                 }
             }
@@ -97,8 +109,23 @@ namespace _3DMouseTranslator
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            swModel = ((ModelDoc2)(app.ActiveDoc));
-            modelView = (ModelView)swModel.ActiveView;
+            try
+            {
+                swModel = ((ModelDoc2)(app.ActiveDoc));
+                modelView = (ModelView)swModel.ActiveView;
+            }
+            catch
+            {
+                timer1.Enabled = false;
+                timer1.Stop();
+                label1.Text = "No Solidwork document open";
+                modelView = null;
+            }
+            if (modelView != null)
+            {
+                timer1.Enabled = true;
+            }
+            
         }
 
         private void cb_threshold_SelectedIndexChanged(object sender, EventArgs e)
